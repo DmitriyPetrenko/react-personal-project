@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { string, func, array } from 'prop-types';
 
 // Components
 import AddTask from '../AddTask/index';
@@ -29,5 +30,16 @@ class SchedulerBody extends Component {
         );
     }
 }
+
+SchedulerBody.propTypes = {
+    value:               string,
+    handleMessageChange: func,
+    handlerSubmit:       func,
+    filterTask:          string,
+    handleFilterTasks:   func,
+    handleKeyPressed:    func,
+    handleRemoveTask:    func,
+    tasks:               array,
+};
 
 export default SchedulerBody;

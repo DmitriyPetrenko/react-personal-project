@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { number } from 'prop-types';
 
 // Instruments
-import { getDisplayName, getRandomInt, getIdTask, getTaskIndex } from './helpers';
+import { getDisplayName } from './helpers';
 
 const decorateSvg = (
     { viewBoxWidth = 0, viewBoxHeight = 0, width = 0, height = 0 } = {},

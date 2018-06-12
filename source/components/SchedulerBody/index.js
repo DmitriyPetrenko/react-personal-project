@@ -5,32 +5,29 @@ import AddTask from '../AddTask/index';
 import TaskItem from '../TaskItem/index';
 
 class SchedulerBody extends Component {
-  constructor(props) {
-    super(props);
-  }
 
-  render() {
-    return (
-      <section>
-        <AddTask
-          value={this.props.value}
-          handlerSubmit={this.props.handlerSubmit}
-          handleMessageChange={this.props.handleMessageChange}
-          maxLength={this.props.maxLength}
-        />
-        <div className={this.props.className}>
-          <TaskItem
-            tasks={this.props.tasks}
-            filterTask={this.props.filterTask}
-            maxLength={this.props.maxLength}
-            handleFilterTasks={this.props.handleFilterTasks}
-            handleRemoveTask={this.props.handleRemoveTask}
-            handleKeyPressed={this.props.handleKeyPressed}
-          />
-        </div>
-      </section>
-    );
-  }
+    render () {
+        return (
+            <section>
+                <AddTask
+                    handleMessageChange = { this.props.handleMessageChange }
+                    handlerSubmit = { this.props.handlerSubmit }
+                    maxLength = { this.props.maxLength }
+                    value = { this.props.value }
+                />
+                <div className = { this.props.className }>
+                    <TaskItem
+                        filterTask = { this.props.filterTask }
+                        handleFilterTasks = { this.props.handleFilterTasks }
+                        handleKeyPressed = { this.props.handleKeyPressed }
+                        handleRemoveTask = { this.props.handleRemoveTask }
+                        maxLength = { this.props.maxLength }
+                        tasks = { this.props.tasks }
+                    />
+                </div>
+            </section>
+        );
+    }
 }
 
 export default SchedulerBody;

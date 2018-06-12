@@ -1,29 +1,31 @@
 import React, { Component } from 'react';
 
 class SchedulerHeader extends Component {
-  constructor(props) {
-    super(props);
-  }
+    shouldComponentUpdate (nextProps) {
+        if (this.props.filterTask !== nextProps.filterTask) {
+            return true;
+        }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if(this.props.filterTask !== nextProps.filterTask) {
-      return true;
+        return false;
     }
-    return false;
-  }
 
-  onChange = (event) => {
-    this.props.handleSearchTask(event.target.value.toLowerCase());
-  }
+    onChange = (event) => {
+        this.props.handleSearchTask(event.target.value.toLowerCase());
+    }
 
-  render() {
-    return (
-      <header>
-        <h1>Планировщик задач</h1>
-        <input type="search" value={this.props.filterTask} onChange={this.onChange} placeholder="Поиск"/>
-      </header>
-    );
-  }
+    render () {
+        return (
+            <header>
+                <h1>Планировщик задач</h1>
+                <input
+                    placeholder = 'Поиск'
+                    type = 'search'
+                    value = { this.props.filterTask }
+                    onChange = { this.onChange }
+                />
+            </header>
+        );
+    }
 }
 
 export default SchedulerHeader;

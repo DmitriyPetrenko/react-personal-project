@@ -11,8 +11,8 @@ export default class App extends Component {
     render () {
         return (
             <Scheduler
-              maxLength = {MAX_LENGTH}
-              alphabet = {ALPHABET}
+                alphabet = { ALPHABET }
+                maxLength = { MAX_LENGTH }
             />
         );
     }

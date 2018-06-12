@@ -3,21 +3,27 @@ export function getDisplayName (WrappedComponent) {
 }
 
 export function getRandomInt (max) {
-  return Math.floor(Math.random() * Math.floor(max));
+    return Math.floor(Math.random() * Math.floor(max));
 }
 
 export function getIdTask (alphabet) {
-  let randomInt;
-  let randomId = '';
-  for(var i=0; i < 3; i++) {
-    randomInt = getRandomInt(alphabet.length);
-    randomId += alphabet[randomInt].toLowerCase();
-  }
-  return randomId;
+    let randomId = '';
+
+    for (let i = 0; i < 3; i++) {
+        const randomInt = getRandomInt(alphabet.length);
+
+        randomId += alphabet[randomInt].toLowerCase();
+    }
+
+    return randomId;
 }
 
 export function getTaskIndex (tasks, id) {
-  let index = tasks.findIndex(task => task.id === id)
-  if(index === -1) return;
+    const index = tasks.findIndex((task) => task.id === id);
+
+    if (index === -1) {
+        return;
+    }
+
     return index;
 }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { number, array } from 'prop-types';
 
 // Components
 import SchedulerHeader from '../SchedulerHeader/index';
@@ -183,5 +184,10 @@ class Scheduler extends Component {
         );
     }
 }
+
+Scheduler.propTypes = {
+    maxLength: number,
+    alphabet:  array,
+};
 
 export default Scheduler;

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { string, func } from 'prop-types';
 
 class SchedulerHeader extends Component {
     shouldComponentUpdate (nextProps) {
@@ -27,5 +28,10 @@ class SchedulerHeader extends Component {
         );
     }
 }
+
+SchedulerFooter.propTypes = {
+    filterTask:       string,
+    handleSearchTask: func,
+};
 
 export default SchedulerHeader;

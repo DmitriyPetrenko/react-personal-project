@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { string, func } from 'prop-types';
 
 // Components
 import Checkbox from '../../theme/assets/Checkbox';
@@ -32,5 +33,10 @@ class SchedulerFooter extends Component {
         );
     }
 }
+
+SchedulerFooter.propTypes = {
+    allCompleted:            string,
+    handleAllTasksCompleted: func,
+};
 
 export default SchedulerFooter;

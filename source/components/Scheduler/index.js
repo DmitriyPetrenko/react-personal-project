@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+
+// Components
 import SchedulerHeader from '../SchedulerHeader/index';
 import SchedulerBody from '../SchedulerBody/index';
 import SchedulerFooter from '../SchedulerFooter/index';
 import Checkbox from '../../theme/assets/Checkbox';
+
+// Styles
 import Styles from './styles.m.css';
 
 // Instruments
@@ -19,10 +23,6 @@ class Scheduler extends Component {
       filterTask: ''
     };
 
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return true;
   }
 
   handleMessageChange = (message) => {
@@ -44,7 +44,8 @@ class Scheduler extends Component {
     };
     this.setState((prevState) => ({
       tasks: [task, ...prevState.tasks],
-      value: ''
+      value: '',
+      allCompleted: false
     }));
 
   }

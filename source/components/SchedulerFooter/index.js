@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+
+// Components
 import Checkbox from '../../theme/assets/Checkbox';
 
 class SchedulerFooter extends Component {
@@ -7,7 +9,11 @@ class SchedulerFooter extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return true;
+    if(this.props.allCompleted !== nextProps.allCompleted) {
+      return true;
+    }
+
+    return false;
   }
 
   onClick = () => {

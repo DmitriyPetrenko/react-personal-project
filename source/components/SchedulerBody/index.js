@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
+
+// Components
 import AddTask from '../AddTask/index';
 import TaskItem from '../TaskItem/index';
 
 class SchedulerBody extends Component {
   constructor(props) {
     super(props);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return true;
   }
 
   render() {

@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
+
+// Components
 import Task from '../Task/index';
 
 class TaskItem extends Component {
   constructor(props) {
     super(props);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return true;
   }
 
   render() {

@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
+
+// Components
 import Star from '../../theme/assets/Star';
 import Edit from '../../theme/assets/Edit';
 import Remove from '../../theme/assets/Remove';
 import Checkbox from '../../theme/assets/Checkbox';
+
+// Styles
 import Styles from './styles.m.css';
 
 
@@ -18,7 +22,19 @@ class Task extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return true;
+    if(this.state.editMessage !== nextState.editMessage) {
+      return true;
+    }
+    if(this.state.isEditing !== nextState.isEditing) {
+      return true;
+    }
+    if(this.props.completed !== nextProps.completed) {
+      return true;
+    }
+    if(this.props.favorite !== nextProps.favorite) {
+      return true;
+    }
+    return false;
   }
 
   componentDidUpdate(prevProps, prevState) {

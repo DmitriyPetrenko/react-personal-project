@@ -6,7 +6,10 @@ class SchedulerHeader extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return true;
+    if(this.props.filterTask !== nextProps.filterTask) {
+      return true;
+    }
+    return false;
   }
 
   onChange = (event) => {

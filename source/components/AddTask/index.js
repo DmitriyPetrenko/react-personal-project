@@ -6,7 +6,11 @@ class SchedulerHead extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return true;
+    if(this.props.value !== nextProps.value) {
+      return true;
+    }
+
+    return false;
   }
 
   onChange = (event) => {

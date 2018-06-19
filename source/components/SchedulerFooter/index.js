@@ -14,29 +14,31 @@ class SchedulerFooter extends Component {
     }
 
     onClick = () => {
-        this.props.handleAllTasksCompleted();
+        this.props.handleCompletedTasks();
     }
 
     render () {
+        const { allCompleted, className } = this.props;
+
         return (
             <footer>
                 <div>
                     <Checkbox
-                        checked = { this.props.allCompleted }
+                        checked = { allCompleted }
                         color1 = '#000'
                         color2 = '#fff'
                         onClick = { this.onClick }
                     />
                 </div>
-                <span className = { this.props.className }>Все задачи выполнены</span>
+                <span className = { className }>Все задачи выполнены</span>
             </footer>
         );
     }
 }
 
 SchedulerFooter.propTypes = {
-    allCompleted:            string,
-    handleAllTasksCompleted: func,
+    allCompleted:         string,
+    handleCompletedTasks: func,
 };
 
 export default SchedulerFooter;

@@ -20,7 +20,7 @@ class SchedulerHeader extends Component {
                 <h1>Планировщик задач</h1>
                 <input
                     placeholder = 'Поиск'
-                    type = 'search'
+                    type = 'text'
                     value = { this.props.filterTask }
                     onChange = { this.onChange }
                 />

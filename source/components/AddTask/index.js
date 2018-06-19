@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 class SchedulerHead extends Component {
     shouldComponentUpdate (nextProps) {
-        if (this.props.value !== nextProps.value) {
+        if (this.props.messageValue !== nextProps.messageValue) {
             return true;
         }
 
@@ -25,7 +25,7 @@ class SchedulerHead extends Component {
                     maxLength = { this.props.maxLength }
                     placeholder = 'Описание моей новой задачи'
                     type = 'text'
-                    value = { this.props.value }
+                    value = { this.props.messageValue }
                     onChange = { this.onChange }
                 />
                 <button>Добавить задачу</button>

@@ -8,22 +8,24 @@ import TaskItem from '../TaskItem/index';
 class SchedulerBody extends Component {
 
     render () {
+        const { handleMessageChange, handlerSubmit, maxLength, messageValue, className, filterTask, handleSortTasks, handleKeyPressed, handleRemoveTask, tasks } = this.props;
+
         return (
             <section>
                 <AddTask
-                    handleMessageChange = { this.props.handleMessageChange }
-                    handlerSubmit = { this.props.handlerSubmit }
-                    maxLength = { this.props.maxLength }
-                    value = { this.props.value }
+                    handleMessageChange = { handleMessageChange }
+                    handlerSubmit = { handlerSubmit }
+                    maxLength = { maxLength }
+                    messageValue = { messageValue }
                 />
-                <div className = { this.props.className }>
+                <div className = { className }>
                     <TaskItem
-                        filterTask = { this.props.filterTask }
-                        handleFilterTasks = { this.props.handleFilterTasks }
-                        handleKeyPressed = { this.props.handleKeyPressed }
-                        handleRemoveTask = { this.props.handleRemoveTask }
-                        maxLength = { this.props.maxLength }
-                        tasks = { this.props.tasks }
+                        filterTask = { filterTask }
+                        handleKeyPressed = { handleKeyPressed }
+                        handleRemoveTask = { handleRemoveTask }
+                        handleSortTasks = { handleSortTasks }
+                        maxLength = { maxLength }
+                        tasks = { tasks }
                     />
                 </div>
             </section>
@@ -32,13 +34,13 @@ class SchedulerBody extends Component {
 }
 
 SchedulerBody.propTypes = {
-    value:               string,
-    handleMessageChange: func,
-    handlerSubmit:       func,
     filterTask:          string,
-    handleFilterTasks:   func,
     handleKeyPressed:    func,
+    handleMessageChange: func,
     handleRemoveTask:    func,
+    handlerSubmit:       func,
+    handleSortTasks:     func,
+    messageValue:        string,
     tasks:               array,
 };
 

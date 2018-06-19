@@ -15,13 +15,13 @@ class Task extends Component {
         super(props);
         this.input = React.createRef();
         this.state = {
-            editMessage: this.props.message,
-            isEditing:   false,
+            editMessageValue: this.props.message,
+            isEditing:        false,
         };
     }
 
     shouldComponentUpdate (nextProps, nextState) {
-        if (this.state.editMessage !== nextState.editMessage) {
+        if (this.state.editMessageValue !== nextState.editMessageValue) {
             return true;
         }
         if (this.state.isEditing !== nextState.isEditing) {
@@ -43,16 +43,15 @@ class Task extends Component {
 
     onKeyPressed = (task) => (event) => {
         if (event.keyCode === 27 || event.keyCode === 13) {
-            let isEditing = this.state.isEditing;
+            const isEditing = !this.state.isEditing;
 
-            isEditing = !isEditing;
             if (event.keyCode === 27) {
                 this.setState({
-                    editMessage: this.props.message,
+                    editMessageValue: this.props.message,
                 });
             }
             if (event.keyCode === 13) {
-                this.props.handleKeyPressed(task, this.state.editMessage);
+                this.props.handleKeyPressed(task, this.state.editMessageValue);
             }
             this.setState({
                 isEditing,
@@ -61,11 +60,10 @@ class Task extends Component {
     }
 
     onToggleEdit = () => {
-        let isEditing = this.state.isEditing;
+        const isEditing = !this.state.isEditing;
 
-        isEditing = !isEditing;
         this.setState({
-            editMessage: this.props.message,
+            editMessageValue: this.props.message,
             isEditing,
         });
     }
@@ -76,12 +74,12 @@ class Task extends Component {
 
     onChange = (event) => {
         this.setState({
-            editMessage: event.target.value,
+            editMessageValue: event.target.value,
         });
     }
 
-    onFilterTasks = (type, task) => () => {
-        this.props.handleFilterTasks(type, task);
+    onFilterTasks = (property, task) => () => {
+        this.props.handleSortTasks(property, task);
     }
 
     render () {
@@ -104,7 +102,7 @@ class Task extends Component {
                             maxLength = { maxLength }
                             ref = { this.input }
                             type = 'text'
-                            value = { this.state.editMessage }
+                            value = { this.state.editMessageValue }
                             onChange = { this.onChange }
                             onKeyDown = { this.onKeyPressed(id) }
                         />

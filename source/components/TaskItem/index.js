@@ -6,7 +6,7 @@ import Task from '../Task/index';
 class TaskItem extends Component {
 
     render () {
-        const { tasks, filterTask, maxLength, handleFilterTasks, handleRemoveTask, handleKeyPressed } = this.props;
+        const { tasks, filterTask, maxLength, handleSortTasks, handleRemoveTask, handleKeyPressed } = this.props;
         const pattern = new RegExp(filterTask, "ig");
         const content = tasks
             .filter(({ message }) => message.toLowerCase().match(pattern))
@@ -15,9 +15,9 @@ class TaskItem extends Component {
                     <Task
                         completed = { completed }
                         favorite = { favorite }
-                        handleFilterTasks = { handleFilterTasks }
                         handleKeyPressed = { handleKeyPressed }
                         handleRemoveTask = { handleRemoveTask }
+                        handleSortTasks = { handleSortTasks }
                         id = { id }
                         key = { id }
                         maxLength = { maxLength }
@@ -28,7 +28,7 @@ class TaskItem extends Component {
 
         return (
             <ul>
-                {tasks.length > 0 && content}
+                {content}
             </ul>
         );
     }

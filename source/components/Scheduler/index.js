@@ -10,80 +10,71 @@ import SchedulerFooter from '../SchedulerFooter/index';
 import Styles from './styles.m.css';
 
 // Instruments
-import { getIdTask, getTaskIndex } from '../../instruments/helpers';
+import { getIdTask, getTaskIndex, sortTasksByDate } from '../../instruments/helpers';
 
 class Scheduler extends Component {
     constructor (props) {
         super(props);
         this.state = {
             tasks:        [],
-            value:        '',
+            messageValue: '',
             allCompleted: false,
             filterTask:   '',
         };
     }
 
-    handleMessageChange = (message) => {
-        const value = message;
+    handleMessageChange = (messageValue) => {
 
         this.setState({
-            value,
+            messageValue,
         });
     }
 
     handlerSubmit = () => {
-        const message = this.state.value;
+        const message = this.state.messageValue;
         const id = getIdTask(this.props.alphabet);
-        const task =  {
-            id,
-            message,
-            completed: false,
-            favorite:  false,
-            created:   new Date(),
-        };
 
         if (message.trim() === '') {
             return;
         }
         this.setState((prevState) => ({
-            tasks:        [task, ...prevState.tasks],
-            value:        '',
+            tasks: [{
+                id,
+                message,
+                completed: false,
+                favorite:  false,
+                created:   new Date(),
+            }, ...prevState.tasks],
+            messageValue: '',
             allCompleted: false,
         }));
     }
 
-    handleFilterTasks = (type, id) => {
+    handleSortTasks = (property, id) => {
         let newState = [];
+        const favorite = [];
+        const completed = [];
+        const other = [];
         const tasks = [...this.state.tasks];
-        const taskItem = id;
 
-        tasks.sort((a, b) => {
-            if (a.created > b.created) {
-                return -1;
-            }
-            if (a.created < b.created) {
-                return 1;
-            }
+        tasks.sort(sortTasksByDate);
+        const index = getTaskIndex(tasks, id);
 
-            return 0;
-        });
-        const index = getTaskIndex(tasks, taskItem);
-
-        tasks[index][type] = !tasks[index][type];
+        tasks[index][property] = !tasks[index][property];
         const tasksCompleted = tasks.every((task) => {
             return task.completed;
         });
 
-        const favorite = tasks.filter((task) => {
-            return task.favorite && !task.completed;
-        });
-
-        const completed = tasks.filter((task) => {
-            return task.completed;
-        });
-
-        const other = tasks.filter((task) => {
-            return !task.favorite && !task.completed;
+        tasks.forEach((task) => {
+            if (task.favorite && !task.completed) {
+                favorite.push(task);
+            }
+            if (task.completed) {
+                completed.push(task);
+            }
+            if (!task.favorite && !task.completed) {
+                other.push(task);
+            }
         });
 
         newState = [...favorite, ...other, ...completed];
@@ -104,10 +95,10 @@ class Scheduler extends Component {
         }
     }
 
+
     handleRemoveTask = (id) => {
         const tasks = [...this.state.tasks];
-        const taskItem = id;
-        const index = getTaskIndex(tasks, taskItem);
+        const index = getTaskIndex(tasks, id);
 
         tasks.splice(index, 1);
         this.setState({
@@ -117,8 +108,7 @@ class Scheduler extends Component {
 
     handleKeyPressed = (id, message) => {
         const tasks = [...this.state.tasks];
-        const taskItem = id;
-        const index = getTaskIndex(tasks, taskItem);
+        const index = getTaskIndex(tasks, id);
 
         tasks[index].message = message;
         this.setState({
@@ -126,7 +116,7 @@ class Scheduler extends Component {
         });
     }
 
-    handleAllTasksCompleted = () => {
+    handleCompletedTasks = () => {
         const tasks = [...this.state.tasks];
         const tasksCompleted = tasks.every((task) => {
             return task.completed;
@@ -135,10 +125,8 @@ class Scheduler extends Component {
         if (tasksCompleted) {
             return;
         }
-        tasks.map((task) => {
+        tasks.forEach((task) => {
             task.completed = true;
-
-            return false;
         });
         this.setState({
             tasks,
@@ -146,8 +134,7 @@ class Scheduler extends Component {
         });
     }
 
-    handleSearchTask = (value) => {
-        const filterTask = value;
+    handleSearchTask = (filterTask) => {
 
         this.setState({
             filterTask,
@@ -155,29 +142,31 @@ class Scheduler extends Component {
     }
 
     render () {
+        const { filterTask, tasks, messageValue, allCompleted } = this.state;
+
         return (
             <div className = { Styles.scheduler }>
                 <main>
                     <SchedulerHeader
-                        filterTask = { this.state.filterTask }
+                        filterTask = { filterTask }
                         handleSearchTask = { this.handleSearchTask }
                     />
                     <SchedulerBody
                         className = { Styles.overlay }
-                        filterTask = { this.state.filterTask }
-                        handleFilterTasks = { this.handleFilterTasks }
+                        filterTask = { filterTask }
                         handleKeyPressed = { this.handleKeyPressed }
                         handleMessageChange = { this.handleMessageChange }
                         handleRemoveTask = { this.handleRemoveTask }
                         handlerSubmit = { this.handlerSubmit }
+                        handleSortTasks = { this.handleSortTasks }
                         maxLength = { this.props.maxLength }
-                        tasks = { this.state.tasks }
-                        value = { this.state.value }
+                        messageValue = { messageValue }
+                        tasks = { tasks }
                     />
                     <SchedulerFooter
-                        allCompleted = { this.state.allCompleted }
+                        allCompleted = { allCompleted }
                         className = { Styles.completeAllTasks }
-                        handleAllTasksCompleted = { this.handleAllTasksCompleted }
+                        handleCompletedTasks = { this.handleCompletedTasks }
                     />
                 </main>
             </div>
@@ -186,8 +175,8 @@ class Scheduler extends Component {
 }
 
 Scheduler.propTypes = {
-    maxLength: number,
     alphabet:  array,
+    maxLength: number,
 };
 
 export default Scheduler;

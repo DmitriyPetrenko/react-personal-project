@@ -1,27 +1,29 @@
 import React, { Component } from 'react';
-import { string, func } from 'prop-types';
+import { connect } from 'react-redux';
+import { string } from 'prop-types';
+
+// Actions
+
+import { getSearchValue } from '../../actions/index';
 
 class SchedulerHeader extends Component {
-    shouldComponentUpdate (nextProps) {
-        if (this.props.filterTask !== nextProps.filterTask) {
-            return true;
-        }
-
-        return false;
-    }
 
     onChange = (event) => {
-        this.props.handleSearchTask(event.target.value.toLowerCase());
+        const { dispatch } = this.props;
+
+        dispatch(getSearchValue(event.target.value.toLowerCase()));
     }
 
     render () {
+        const { searchValue } = this.props;
+
         return (
             <header>
                 <h1>Планировщик задач</h1>
                 <input
                     placeholder = 'Поиск'
                     type = 'text'
-                    value = { this.props.filterTask }
+                    value = { searchValue }
                     onChange = { this.onChange }
                 />
             </header>
@@ -30,8 +32,13 @@ class SchedulerHeader extends Component {
 }
 
 SchedulerHeader.propTypes = {
-    filterTask:       string,
-    handleSearchTask: func,
+    searchValue: string.isRequired,
 };
 
-export default SchedulerHeader;
+const mapStateToProps = (state) => {
+    return {
+        searchValue: state.searchValue,
+    };
+};
+
+export default connect(mapStateToProps)(SchedulerHeader);

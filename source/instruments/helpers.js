@@ -2,33 +2,7 @@ export function getDisplayName (WrappedComponent) {
     return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
-export function getRandomInt (max) {
-    return Math.floor(Math.random() * Math.floor(max));
-}
-
-export function getIdTask (alphabet) {
-    let randomId = '';
-
-    for (let i = 0; i < 3; i++) {
-        const randomInt = getRandomInt(alphabet.length);
-
-        randomId += alphabet[randomInt].toLowerCase();
-    }
-
-    return randomId;
-}
-
-export function getTaskIndex (tasks, id) {
-    const index = tasks.findIndex((task) => task.id === id);
-
-    if (index === -1) {
-        return;
-    }
-
-    return index;
-}
-
-export function sortTasksByDate (a, b) {
+function sortTasksByDate (a, b) {
     if (a.created > b.created) {
         return -1;
     }
@@ -37,4 +11,33 @@ export function sortTasksByDate (a, b) {
     }
 
     return 0;
+}
+
+export function sortTasks (tasks) {
+    if (tasks.length === 0) {
+        return;
+    }
+    let sortedTasks = [];
+    const favorite = [];
+    const completed = [];
+    const other = [];
+
+    tasks.sort(sortTasksByDate);
+
+    tasks.forEach((task) => {
+        if (task.favorite && !task.completed) {
+            favorite.push(task);
+        }
+        if (task.completed) {
+            completed.push(task);
+        }
+        if (!task.favorite && !task.completed) {
+            other.push(task);
+        }
+    });
+
+    sortedTasks = [...favorite, ...other, ...completed];
+
+    return sortedTasks;
+
 }

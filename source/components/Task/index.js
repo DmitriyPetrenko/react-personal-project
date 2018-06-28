@@ -1,4 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+// Actions
+import {
+    updateTask,
+    deleteTask
+} from '../../actions/index';
 
 // Components
 import Star from '../../theme/assets/Star';
@@ -9,67 +16,21 @@ import Checkbox from '../../theme/assets/Checkbox';
 // Styles
 import Styles from './styles.m.css';
 
+//Config
+import { MAX_LENGTH } from '../../config/index';
 
 class Task extends Component {
     constructor (props) {
         super(props);
         this.input = React.createRef();
         this.state = {
-            editMessageValue: this.props.message,
             isEditing:        false,
+            editMessageValue: this.props.message,
         };
     }
 
-    shouldComponentUpdate (nextProps, nextState) {
-        if (this.state.editMessageValue !== nextState.editMessageValue) {
-            return true;
-        }
-        if (this.state.isEditing !== nextState.isEditing) {
-            return true;
-        }
-        if (this.props.completed !== nextProps.completed) {
-            return true;
-        }
-        if (this.props.favorite !== nextProps.favorite) {
-            return true;
-        }
-
-        return false;
-    }
-
-    componentDidUpdate (prevProps, prevState) {
+    componentDidUpdate (prevState) {
         !prevState.isEditing && this.input.current.focus();
-    }
-
-    onKeyPressed = (task) => (event) => {
-        if (event.keyCode === 27 || event.keyCode === 13) {
-            const isEditing = !this.state.isEditing;
-
-            if (event.keyCode === 27) {
-                this.setState({
-                    editMessageValue: this.props.message,
-                });
-            }
-            if (event.keyCode === 13) {
-                this.props.handleKeyPressed(task, this.state.editMessageValue);
-            }
-            this.setState({
-                isEditing,
-            });
-        }
-    }
-
-    onToggleEdit = () => {
-        const isEditing = !this.state.isEditing;
-
-        this.setState({
-            editMessageValue: this.props.message,
-            isEditing,
-        });
-    }
-
-    onRemove = (task) => () => {
-        this.props.handleRemoveTask(task);
     }
 
     onChange = (event) => {
@@ -78,12 +39,76 @@ class Task extends Component {
         });
     }
 
-    onFilterTasks = (property, task) => () => {
-        this.props.handleSortTasks(property, task);
+    onSort = (property, taskId) => () => {
+        const {
+            dispatch,
+            tasks,
+        } = this.props;
+        const newStateOfTheTasks = tasks.filter((task) => {
+            task.id === taskId ? { task, ...task[property] = !task[property] } : task;
+
+            return task.id === taskId;
+        });
+
+        dispatch(updateTask('', newStateOfTheTasks, tasks));
+    }
+
+    onToggleEdit = () => {
+        this.setState((prevState) => {
+            return {
+                editMessageValue: this.props.message,
+                isEditing:        !prevState.isEditing,
+            };
+        });
+    }
+
+    onEdit = (taskId) => (event) => {
+        if (event.keyCode === 27 || event.keyCode === 13) {
+            const {
+                dispatch,
+                message,
+                tasks,
+            } = this.props;
+
+            if (event.keyCode === 27) {
+                this.setState({
+                    editMessageValue: message,
+                });
+            }
+            if (event.keyCode === 13) {
+                const newStateOfTheTasks = tasks.filter((task) => {
+                    task.id === taskId ? { task, ...task.message = this.state.editMessageValue } : task;
+
+                    return task.id === taskId;
+                });
+
+                dispatch(updateTask('', newStateOfTheTasks, tasks));
+            }
+            this.setState((prevState) => {
+                return {
+                    isEditing: !prevState.isEditing,
+                };
+            });
+        }
+    }
+
+    onRemove = (taskId) => () => {
+        const { tasks, dispatch } = this.props;
+        const newArrOfTheTasks = tasks.filter((task) => task.id !== taskId);
+
+        dispatch(deleteTask(taskId, newArrOfTheTasks));
     }
 
     render () {
-        const { id, completed, favorite, maxLength } = this.props;
+        const {
+            id,
+            completed,
+            favorite,
+        } = this.props;
+        const {
+            isEditing,
+            editMessageValue,
+        } = this.state;
 
         return (
             <li className = 'Task'>
@@ -94,17 +119,17 @@ class Task extends Component {
                                 checked = { completed }
                                 color1 = '#3B8EF3'
                                 color2 = '#fff'
-                                onClick = { this.onFilterTasks('completed', id) }
+                                onClick = { this.onSort('completed', id) }
                             />
                         </div>
                         <input
-                            disabled = { !this.state.isEditing }
-                            maxLength = { maxLength }
+                            disabled = { !isEditing }
+                            maxLength = { MAX_LENGTH }
                             ref = { this.input }
                             type = 'text'
-                            value = { this.state.editMessageValue }
+                            value = { editMessageValue }
                             onChange = { this.onChange }
-                            onKeyDown = { this.onKeyPressed(id) }
+                            onKeyDown = { this.onEdit(id) }
                         />
                     </div>
                     <div className = { Styles.actions }>
@@ -114,7 +139,7 @@ class Task extends Component {
                             className = { Styles.setPriority }
                             color1 = '#3B8EF3'
                             color2 = '#000'
-                            onClick = { this.onFilterTasks('favorite', id) }
+                            onClick = { this.onSort('favorite', id) }
                         />
                         <Edit
                             inlineBlock
@@ -136,4 +161,10 @@ class Task extends Component {
     }
 }
 
-export default Task;
+const mapStateToProps = (state) => {
+    return {
+        tasks: state.tasks.items,
+    };
+};
+
+export default connect(mapStateToProps)(Task);

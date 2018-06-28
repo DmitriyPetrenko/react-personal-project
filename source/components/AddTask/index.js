@@ -1,31 +1,54 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { string } from 'prop-types';
 
-class SchedulerHead extends Component {
-    shouldComponentUpdate (nextProps) {
-        if (this.props.messageValue !== nextProps.messageValue) {
-            return true;
-        }
+// Actions
+import {
+    getMessageValue,
+    addTask
+} from '../../actions/index';
 
-        return false;
-    }
+//Config
+import { MAX_LENGTH } from '../../config/index';
+
+class AddTask extends Component {
 
     onChange = (event) => {
-        this.props.handleMessageChange(event.target.value);
+        const { dispatch } = this.props;
+
+        dispatch(getMessageValue(event.target.value));
     }
 
     onSubmit = (event) => {
         event.preventDefault();
-        this.props.handlerSubmit();
+
+        const { newTaskMessage, dispatch } = this.props;
+
+        if (newTaskMessage.trim() === '') {
+            return;
+        }
+
+        const task = {
+            message:   newTaskMessage,
+            completed: false,
+            favorite:  false,
+            created:   Date.now(),
+        };
+
+        dispatch(addTask('', task));
     }
 
     render () {
+        const { newTaskMessage } = this.props;
+
         return (
-            <form onSubmit = { this.onSubmit }>
+            <form
+                onSubmit = { this.onSubmit }>
                 <input
-                    maxLength = { this.props.maxLength }
+                    maxLength = { MAX_LENGTH }
                     placeholder = 'Описание моей новой задачи'
                     type = 'text'
-                    value = { this.props.messageValue }
+                    value = { newTaskMessage }
                     onChange = { this.onChange }
                 />
                 <button>Добавить задачу</button>
@@ -34,4 +57,14 @@ class SchedulerHead extends Component {
     }
 }
 
-export default SchedulerHead;
+AddTask.propTypes = {
+    newTaskMessage: string.isRequired,
+};
+
+const mapStateToProps = (state) => {
+    return {
+        newTaskMessage: state.newTaskMessage,
+    };
+};
+
+export default connect(mapStateToProps)(AddTask);

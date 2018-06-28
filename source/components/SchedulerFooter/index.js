@@ -1,30 +1,38 @@
 import React, { Component } from 'react';
-import { string, func } from 'prop-types';
+import { connect } from 'react-redux';
+import { string, arrayOf, shape, bool } from 'prop-types';
+
+// Actions
+
+import { updateTask } from '../../actions/index';
 
 // Components
 import Checkbox from '../../theme/assets/Checkbox';
 
 class SchedulerFooter extends Component {
-    shouldComponentUpdate (nextProps) {
-        if (this.props.allCompleted !== nextProps.allCompleted) {
-            return true;
-        }
-
-        return false;
-    }
 
     onClick = () => {
-        this.props.handleCompletedTasks();
+        const { dispatch } = this.props;
+        const tasks = [...this.props.tasks];
+        const tasksCompleted = tasks.every((task) => task.completed);
+
+        if (tasksCompleted) {
+            return;
+        }
+
+        tasks.forEach((task) => task.completed = true);
+
+        dispatch(updateTask('', tasks, tasks));
     }
 
     render () {
-        const { allCompleted, className } = this.props;
+        const { className, allTasksCompleted } = this.props;
 
         return (
             <footer>
                 <div>
                     <Checkbox
-                        checked = { allCompleted }
+                        checked = { allTasksCompleted }
                         color1 = '#000'
                         color2 = '#fff'
                         onClick = { this.onClick }
@@ -37,8 +45,20 @@ class SchedulerFooter extends Component {
 }
 
 SchedulerFooter.propTypes = {
-    allCompleted:         string,
-    handleCompletedTasks: func,
+    allTasksCompleted: bool.isRequired,
+    tasks:             arrayOf(shape({
+        id:        string.isRequired,
+        message:   string.isRequired,
+        favorite:  bool.isRequired,
+        completed: bool.isRequired,
+    }).isRequired).isRequired,
 };
 
-export default SchedulerFooter;
+const mapStateToProps = (state) => {
+    return {
+        allTasksCompleted: state.allTasksCompleted,
+        tasks:             state.tasks.items,
+    };
+};
+
+export default connect(mapStateToProps)(SchedulerFooter);

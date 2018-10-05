@@ -1,18 +1,13 @@
 // Core
-import React, { Component } from 'react';
+import React from 'react';
 import { bool } from 'prop-types';
 import { connect } from 'react-redux';
 
 // Instruments
 import Styles from './styles.m.css';
 
-class Spinner extends Component {
-
-    render () {
-        const { spin } = this.props;
-
-        return spin ? <div className = { Styles.spinner } /> : null;
-    }
+function Spinner ({ spin }) {
+    return spin && <div className = { Styles.spinner } />;
 }
 
 Spinner.propTypes = {

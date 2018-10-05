@@ -1,15 +1,18 @@
 // Actions
 import {
+    tasksListActions
+} from '../actions/TaskList';
+
+// Instruments
+import { sortTasks } from '../instruments/helpers';
+
+const {
     REСEIVE_TASKS,
     ADD_TASK,
     UPDATE_TASK,
     DELETE_TASK,
     REQUEST_TASKS,
-    REQUEST_ERROR
-} from '../actions/TaskList';
-
-// Instruments
-import { sortTasks } from '../instruments/helpers';
+} = tasksListActions;
 
 export const tasksReducer = (state, action) => {
     switch (action.type) {
@@ -23,13 +26,13 @@ export const tasksReducer = (state, action) => {
             return {
                 ...state,
                 isFetching: false,
-                items:      sortTasks([action.task, ...state.items]),
+                items:      sortTasks([action.newTask, ...state.items]),
             };
         case UPDATE_TASK:
             return {
                 ...state,
                 isFetching: false,
-                items:      sortTasks(action.tasks),
+                items:      sortTasks(action.updatedTasks),
             };
         case DELETE_TASK:
             return {
@@ -41,12 +44,6 @@ export const tasksReducer = (state, action) => {
             return {
                 ...state,
                 isFetching: true,
-            };
-        case REQUEST_ERROR:
-            return {
-                ...state,
-                isFetching: false,
-                error:      action.error,
             };
         default:
             return state;

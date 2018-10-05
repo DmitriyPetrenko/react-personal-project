@@ -2,21 +2,21 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 // Components
-import SchedulerHeader from '../SchedulerHeader/index';
-import SchedulerBody from '../SchedulerBody/index';
-import SchedulerFooter from '../SchedulerFooter/index';
-import Spinner from '../Spinner/index';
+import SchedulerHeader from '../SchedulerHeader';
+import SchedulerBody from '../SchedulerBody';
+import SchedulerFooter from '../SchedulerFooter';
+import Spinner from '../Spinner';
 
 // Styles
 import Styles from './styles.m.css';
 
 // Actions
 
-import { fetchTasks } from '../../actions/index';
+import { fetchTasks } from '../../actions';
 
 class Scheduler extends Component {
 
-    componentWillMount () {
+    componentDidMount () {
         this.props.dispatch(fetchTasks());
     }
 
@@ -26,10 +26,10 @@ class Scheduler extends Component {
                 <main>
                     <SchedulerHeader />
                     <SchedulerBody
-                        className = { Styles.overlay }
+                        variant = { Styles.overlay }
                     />
                     <SchedulerFooter
-                        className = { Styles.completeAllTasks }
+                        variant = { Styles.completeAllTasks }
                     />
                     <Spinner />
                 </main>

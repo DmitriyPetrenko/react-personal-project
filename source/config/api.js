@@ -1,2 +1,2 @@
-export const endpoint = 'https://lab.lectrum.io/hw/todo/api';
-export const token = 'ff3K17EtYE57tgI4';
+export const ENDPOINT = 'https://lab.lectrum.io/hw/todo/api';
+export const TOKEN = 'ff3K17EtYE57tgI4';

@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 
 // Actions
 import {
-    updateTask,
+    updateTasks,
     deleteTask
-} from '../../actions/index';
+} from '../../actions';
 
 // Components
 import Star from '../../theme/assets/Star';
@@ -17,7 +17,7 @@ import Checkbox from '../../theme/assets/Checkbox';
 import Styles from './styles.m.css';
 
 //Config
-import { MAX_LENGTH } from '../../config/index';
+import { MAX_LENGTH } from '../../config';
 
 class Task extends Component {
     constructor (props) {
@@ -27,33 +27,35 @@ class Task extends Component {
             isEditing:        false,
             editMessageValue: this.props.message,
         };
+
+        this.handleChange = this.handleChange.bind(this);
+        this.handleToggleEdit = this.handleToggleEdit.bind(this);
     }
 
     componentDidUpdate (prevState) {
         !prevState.isEditing && this.input.current.focus();
     }
 
-    onChange = (event) => {
+    handleChange (event) {
         this.setState({
             editMessageValue: event.target.value,
         });
     }
 
-    onSort = (property, taskId) => () => {
+    handleToggleAttr = (property, taskId) => () => {
         const {
             dispatch,
             tasks,
         } = this.props;
-        const newStateOfTheTasks = tasks.filter((task) => {
-            task.id === taskId ? { task, ...task[property] = !task[property] } : task;
+        const updatedAttrTask = tasks.filter((task) => task.id === taskId ? { task, ...task[property] = !task[property] } : task);
 
-            return task.id === taskId;
-        });
-
-        dispatch(updateTask('', newStateOfTheTasks, tasks));
+        dispatch(updateTasks({
+            updatedTasks:      updatedAttrTask,
+            updatedStateTasks: tasks,
+        }));
     }
 
-    onToggleEdit = () => {
+    handleToggleEdit () {
         this.setState((prevState) => {
             return {
                 editMessageValue: this.props.message,
@@ -62,7 +64,7 @@ class Task extends Component {
         });
     }
 
-    onEdit = (taskId) => (event) => {
+    handleEdit = (taskId) => (event) => {
         if (event.keyCode === 27 || event.keyCode === 13) {
             const {
                 dispatch,
@@ -70,20 +72,29 @@ class Task extends Component {
                 tasks,
             } = this.props;
 
-            if (event.keyCode === 27) {
-                this.setState({
-                    editMessageValue: message,
-                });
-            }
-            if (event.keyCode === 13) {
-                const newStateOfTheTasks = tasks.filter((task) => {
-                    task.id === taskId ? { task, ...task.message = this.state.editMessageValue } : task;
+            switch (event.keyCode) {
+                case 27: {
+                    this.setState({
+                        editMessageValue: message,
+                    });
 
-                    return task.id === taskId;
-                });
+                    break;
+                }
+                case 13: {
+                    const updatedMessageTask = tasks.filter((task) => task.id === taskId ? { task, ...task.message = this.state.editMessageValue } : task);
 
-                dispatch(updateTask('', newStateOfTheTasks, tasks));
+                    dispatch(updateTasks({
+                        updatedTasks:      updatedMessageTask,
+                        updatedStateTasks: tasks,
+                    }));
+
+                    break;
+                }
+                default: {
+                    break;
+                }
             }
+
             this.setState((prevState) => {
                 return {
                     isEditing: !prevState.isEditing,
@@ -92,11 +103,11 @@ class Task extends Component {
         }
     }
 
-    onRemove = (taskId) => () => {
+    handleRemove = (taskId) => () => {
         const { tasks, dispatch } = this.props;
-        const newArrOfTheTasks = tasks.filter((task) => task.id !== taskId);
+        const updatedStateTasks = tasks.filter((task) => task.id !== taskId);
 
-        dispatch(deleteTask(taskId, newArrOfTheTasks));
+        dispatch(deleteTask(taskId, updatedStateTasks));
     }
 
     render () {
@@ -119,7 +130,7 @@ class Task extends Component {
                                 checked = { completed }
                                 color1 = '#3B8EF3'
                                 color2 = '#fff'
-                                onClick = { this.onSort('completed', id) }
+                                onClick = { this.handleToggleAttr('completed', id) }
                             />
                         </div>
                         <input
@@ -128,8 +139,8 @@ class Task extends Component {
                             ref = { this.input }
                             type = 'text'
                             value = { editMessageValue }
-                            onChange = { this.onChange }
-                            onKeyDown = { this.onEdit(id) }
+                            onChange = { this.handleChange }
+                            onKeyDown = { this.handleEdit(id) }
                         />
                     </div>
                     <div className = { Styles.actions }>
@@ -139,20 +150,20 @@ class Task extends Component {
                             className = { Styles.setPriority }
                             color1 = '#3B8EF3'
                             color2 = '#000'
-                            onClick = { this.onSort('favorite', id) }
+                            onClick = { this.handleToggleAttr('favorite', id) }
                         />
                         <Edit
                             inlineBlock
                             className = { Styles.edit }
                             color1 = '#3B8EF3'
                             color2 = '#000'
-                            onClick = { this.onToggleEdit }
+                            onClick = { this.handleToggleEdit }
                         />
                         <Remove
                             inlineBlock
                             color1 = '#3B8EF3'
                             color2 = '#000'
-                            onClick = { this.onRemove(id) }
+                            onClick = { this.handleRemove(id) }
                         />
                     </div>
                 </div>

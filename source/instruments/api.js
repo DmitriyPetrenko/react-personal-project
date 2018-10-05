@@ -1,12 +1,12 @@
 // Config
-import { endpoint, token } from '../config/api';
+import { ENDPOINT, TOKEN } from '../config/api';
 
-const request = (method, path, body) => {
-    const url = `${endpoint}/${path}`;
+const request = (method, path = '', body) => {
+    const url = `${ENDPOINT}/${path}`;
     const options = {
         method,
         headers: {
-            'Authorization': token,
+            'Authorization': TOKEN,
             'content-type':  'application/json',
         },
     };
@@ -19,16 +19,16 @@ const request = (method, path, body) => {
 };
 
 export const API = {
-    get ({ path = '' } = {}) {
-        return request('GET', path);
+    get () {
+        return request('GET');
     },
-    post (path = '', data = []) {
+    post (path, data) {
         return request('POST', path, data);
     },
-    update (path = '', data = []) {
+    update (path, data) {
         return request('PUT', path, data);
     },
-    delete (path = '') {
+    delete (path) {
         return request('DELETE', path);
     },
 };

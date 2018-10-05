@@ -4,11 +4,21 @@ import { string } from 'prop-types';
 
 // Actions
 
-import { getSearchValue } from '../../actions/index';
+import { getSearchValue } from '../../actions';
 
 class SchedulerHeader extends Component {
 
-    onChange = (event) => {
+    static propTypes = {
+        searchValue: string.isRequired,
+    };
+
+    constructor (props) {
+        super(props);
+
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange (event) {
         const { dispatch } = this.props;
 
         dispatch(getSearchValue(event.target.value.toLowerCase()));
@@ -24,16 +34,12 @@ class SchedulerHeader extends Component {
                     placeholder = 'Поиск'
                     type = 'text'
                     value = { searchValue }
-                    onChange = { this.onChange }
+                    onChange = { this.handleChange }
                 />
             </header>
         );
     }
 }
-
-SchedulerHeader.propTypes = {
-    searchValue: string.isRequired,
-};
 
 const mapStateToProps = (state) => {
     return {

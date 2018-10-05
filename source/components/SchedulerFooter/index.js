@@ -4,29 +4,51 @@ import { string, arrayOf, shape, bool } from 'prop-types';
 
 // Actions
 
-import { updateTask } from '../../actions/index';
+import { updateTasks } from '../../actions';
 
 // Components
 import Checkbox from '../../theme/assets/Checkbox';
 
 class SchedulerFooter extends Component {
 
-    onClick = () => {
-        const { dispatch } = this.props;
-        const tasks = [...this.props.tasks];
-        const tasksCompleted = tasks.every((task) => task.completed);
+    static propTypes = {
+        allTasksCompleted: bool.isRequired,
+        tasks:             arrayOf(shape({
+            id:        string.isRequired,
+            message:   string.isRequired,
+            favorite:  bool.isRequired,
+            completed: bool.isRequired,
+        }).isRequired).isRequired,
+    };
 
-        if (tasksCompleted) {
+    constructor (props) {
+        super(props);
+
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick () {
+        const {
+            dispatch,
+            allTasksCompleted,
+        } = this.props;
+
+        if (allTasksCompleted) {
             return;
         }
 
-        tasks.forEach((task) => task.completed = true);
+        const updatedTasks = [...this.props.tasks];
 
-        dispatch(updateTask('', tasks, tasks));
+        updatedTasks.forEach((task) => task.completed = true);
+
+        dispatch(updateTasks({
+            updatedTasks,
+            updatedStateTasks: updatedTasks,
+        }));
     }
 
     render () {
-        const { className, allTasksCompleted } = this.props;
+        const { variant, allTasksCompleted } = this.props;
 
         return (
             <footer>
@@ -35,24 +57,14 @@ class SchedulerFooter extends Component {
                         checked = { allTasksCompleted }
                         color1 = '#000'
                         color2 = '#fff'
-                        onClick = { this.onClick }
+                        onClick = { this.handleClick }
                     />
                 </div>
-                <span className = { className }>Все задачи выполнены</span>
+                <span className = { variant }>Все задачи выполнены</span>
             </footer>
         );
     }
 }
-
-SchedulerFooter.propTypes = {
-    allTasksCompleted: bool.isRequired,
-    tasks:             arrayOf(shape({
-        id:        string.isRequired,
-        message:   string.isRequired,
-        favorite:  bool.isRequired,
-        completed: bool.isRequired,
-    }).isRequired).isRequired,
-};
 
 const mapStateToProps = (state) => {
     return {

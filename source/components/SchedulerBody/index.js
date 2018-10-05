@@ -1,24 +1,18 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
 
 // Components
-import AddTask from '../AddTask/index';
-import TaskList from '../TaskList/index';
+import AddTask from '../AddTask';
+import TaskList from '../TaskList';
 
-class SchedulerBody extends Component {
-
-    render () {
-        const { className } = this.props;
-
-        return (
-            <section>
-                <AddTask />
-                <TaskList
-                    className = { className }
-                />
-            </section>
-        );
-    }
+function SchedulerBody ({ variant }) {
+    return (
+        <section>
+            <AddTask />
+            <TaskList
+                variant = { variant }
+            />
+        </section>
+    );
 }
 
-export default connect()(SchedulerBody);
+export default SchedulerBody;

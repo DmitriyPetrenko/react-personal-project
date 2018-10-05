@@ -1,55 +1,65 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { string } from 'prop-types';
 
 // Actions
 import {
-    getMessageValue,
     addTask
-} from '../../actions/index';
+} from '../../actions';
 
 //Config
-import { MAX_LENGTH } from '../../config/index';
+import { MAX_LENGTH } from '../../config';
 
 class AddTask extends Component {
 
-    onChange = (event) => {
-        const { dispatch } = this.props;
+    constructor (props) {
+        super(props);
+        this.state = {
+            newTaskMessage: '',
+        };
 
-        dispatch(getMessageValue(event.target.value));
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    onSubmit = (event) => {
+    handleChange (event) {
+        this.setState({
+            newTaskMessage: event.target.value,
+        });
+    }
+
+    handleSubmit (event) {
         event.preventDefault();
 
-        const { newTaskMessage, dispatch } = this.props;
+        const { dispatch } = this.props;
 
-        if (newTaskMessage.trim() === '') {
+        if (this.state.newTaskMessage.trim() === '') {
             return;
         }
 
-        const task = {
-            message:   newTaskMessage,
+        const newTask = {
+            message:   this.state.newTaskMessage,
             completed: false,
             favorite:  false,
             created:   Date.now(),
         };
 
-        dispatch(addTask('', task));
+        dispatch(addTask({ newTask }));
+
+        this.setState({
+            newTaskMessage: '',
+        });
     }
 
     render () {
-        const { newTaskMessage } = this.props;
-
         return (
             <form
-                onSubmit = { this.onSubmit }>
+                onSubmit = { this.handleSubmit }>
                 <input
                     maxLength = { MAX_LENGTH }
                     placeholder = 'Описание моей новой задачи'
                     type = 'text'
-                    value = { newTaskMessage }
-                    onChange = { this.onChange }
+                    value = { this.state.newTaskMessage }
+                    onChange = { this.handleChange }
                 />
                 <button>Добавить задачу</button>
             </form>
@@ -57,14 +67,4 @@ class AddTask extends Component {
     }
 }
 
-AddTask.propTypes = {
-    newTaskMessage: string.isRequired,
-};
-
-const mapStateToProps = (state) => {
-    return {
-        newTaskMessage: state.newTaskMessage,
-    };
-};
-
-export default connect(mapStateToProps)(AddTask);
+export default connect()(AddTask);

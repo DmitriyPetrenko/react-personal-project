@@ -1,30 +1,32 @@
-export function getDisplayName (WrappedComponent) {
+export const getDisplayName = (WrappedComponent) => {
     return WrappedComponent.displayName || WrappedComponent.name || 'Component';
-}
+};
 
-function sortTasksByDate (a, b) {
+const sortTasksByDate = (a, b) => {
     if (a.created > b.created) {
         return -1;
     }
+
     if (a.created < b.created) {
         return 1;
     }
 
     return 0;
-}
+};
 
-export function sortTasks (tasks) {
+export const sortTasks = (tasks) => {
     if (tasks.length === 0) {
         return;
     }
-    let sortedTasks = [];
+
     const favorite = [];
     const completed = [];
     const other = [];
+    const copyTasks = [...tasks];
 
-    tasks.sort(sortTasksByDate);
+    copyTasks.sort(sortTasksByDate);
 
-    tasks.forEach((task) => {
+    copyTasks.forEach((task) => {
         if (task.favorite && !task.completed) {
             favorite.push(task);
         }
@@ -36,8 +38,19 @@ export function sortTasks (tasks) {
         }
     });
 
-    sortedTasks = [...favorite, ...other, ...completed];
+    return [...favorite, ...other, ...completed];
+};
 
-    return sortedTasks;
+export const propertyError = (error) => {
+    throw new Error(error);
+};
 
-}
+export const getStatusResponse = (response) => {
+    if (response.status !== 200) {
+        return Promise.reject(propertyError(response.statusText));
+    }
+
+    return Promise.resolve(response);
+};
+
+export const getJSON = (response) => response.json();

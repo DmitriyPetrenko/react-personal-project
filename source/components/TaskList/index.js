@@ -8,12 +8,24 @@ import {
 } from 'prop-types';
 
 // Actions
-import { allTasksCompleted } from '../../actions/index';
+import { allTasksCompleted } from '../../actions';
 
 // Components
-import Task from '../Task/index';
+import Task from '../Task';
 
 class TaskList extends Component {
+
+    static propTypes = {
+        searchValue: string.isRequired,
+        tasks:       arrayOf(shape({
+            id:        string.isRequired,
+            message:   string.isRequired,
+            favorite:  bool.isRequired,
+            completed: bool.isRequired,
+        }).isRequired).isRequired,
+        variant: string.isRequired,
+    };
+
     componentDidUpdate () {
         const {
             tasks,
@@ -32,7 +44,7 @@ class TaskList extends Component {
         const {
             tasks,
             searchValue,
-            className,
+            variant,
         } = this.props;
         const pattern = new RegExp(searchValue, "ig");
         const content = tasks
@@ -50,7 +62,7 @@ class TaskList extends Component {
             });
 
         return (
-            <div className = { className }>
+            <div className = { variant }>
                 <ul>
                     { content }
                 </ul>
@@ -58,17 +70,6 @@ class TaskList extends Component {
         );
     }
 }
-
-TaskList.propTypes = {
-    className:   string.isRequired,
-    searchValue: string.isRequired,
-    tasks:       arrayOf(shape({
-        id:        string.isRequired,
-        message:   string.isRequired,
-        favorite:  bool.isRequired,
-        completed: bool.isRequired,
-    }).isRequired).isRequired,
-};
 
 const mapStateToProps = (state) => {
     return {

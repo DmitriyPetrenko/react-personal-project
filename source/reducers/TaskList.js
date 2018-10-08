@@ -38,7 +38,7 @@ export const tasksReducer = (state, action) => {
             return {
                 ...state,
                 isFetching: false,
-                items:      action.tasks,
+                items:      action.updatedTasks,
             };
         case REQUEST_TASKS:
             return {

@@ -14,31 +14,37 @@ const sortTasksByDate = (a, b) => {
     return 0;
 };
 
+const sortTasksByAttr = (a, b) => {
+    if (a.completed > b.completed) {
+        return 1;
+    }
+
+    if (a.completed < b.completed) {
+        return -1;
+    }
+
+    if (a.favorite < b.favorite) {
+        return 1;
+    }
+
+    if (a.favorite > b.favorite) {
+        return -1;
+    }
+
+    return 0;
+};
+
 export const sortTasks = (tasks) => {
     if (tasks.length === 0) {
         return;
     }
 
-    const favorite = [];
-    const completed = [];
-    const other = [];
-    const copyTasks = [...tasks];
+    const cloneTasks = [...tasks];
 
-    copyTasks.sort(sortTasksByDate);
+    cloneTasks.sort(sortTasksByDate);
+    cloneTasks.sort(sortTasksByAttr);
 
-    copyTasks.forEach((task) => {
-        if (task.favorite && !task.completed) {
-            favorite.push(task);
-        }
-        if (task.completed) {
-            completed.push(task);
-        }
-        if (!task.favorite && !task.completed) {
-            other.push(task);
-        }
-    });
-
-    return [...favorite, ...other, ...completed];
+    return cloneTasks;
 };
 
 export const propertyError = (error) => {
@@ -46,11 +52,15 @@ export const propertyError = (error) => {
 };
 
 export const getStatusResponse = (response) => {
-    if (response.status !== 200) {
-        return Promise.reject(propertyError(response.statusText));
+    switch (response.status) {
+        case 200:
+        case 204: {
+            return Promise.resolve(response);
+        }
+        default: {
+            return Promise.reject(propertyError(response.statusText));
+        }
     }
-
-    return Promise.resolve(response);
 };
 
 export const getJSON = (response) => response.json();

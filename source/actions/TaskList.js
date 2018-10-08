@@ -70,7 +70,7 @@ export const updateTasks = ({ path = '', updatedTasks, updatedStateTasks }) => (
         .catch((error) => propertyError(error));
 };
 
-export const deleteTask = (path, tasks) => (dispatch) => {
+export const deleteTask = (path, updatedStateTasks) => (dispatch) => {
 
     dispatch(requestTasks());
 
@@ -79,8 +79,8 @@ export const deleteTask = (path, tasks) => (dispatch) => {
         .then((response) => response)
         .then(() => {
             dispatch({
-                type: tasksListActions.DELETE_TASK,
-                tasks,
+                updatedTasks: updatedStateTasks,
+                type:         tasksListActions.DELETE_TASK,
             });
         })
         .catch((error) => propertyError(error));
